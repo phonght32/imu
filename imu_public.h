@@ -137,6 +137,78 @@ err_code_t imu_config(imu_handle_t handle);
  */
 err_code_t imu_config_mpu9250(imu_handle_t handle, mpu9250_cfg_t mpu9250_cfg);
 
+/*
+ * @brief   Get accelerometer raw value.
+ *
+ * @param   handle Handle structure.
+ * @param   raw_data Raw data.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_accel_raw(imu_handle_t handle, imu_raw_data_t *raw_data);
+
+/*
+ * @brief   Get gyroscope raw value.
+ *
+ * @param   handle Handle structure.
+ * @param   raw_data Raw data.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_gyro_raw(imu_handle_t handle, imu_raw_data_t *raw_data);
+
+/*
+ * @brief   Get accelerometer calibrated data.
+ *
+ * @param   handle Handle structure.
+ * @param   calib_data Calibrated data.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_accel_calib(imu_handle_t handle, imu_calib_data_t *calib_data);
+
+/*
+ * @brief   Get gyroscope calibrated data.
+ *
+ * @param   handle Handle structure.
+ * @param   calib_data Calibrated data.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_gyro_calib(imu_handle_t handle, imu_calib_data_t *calib_data);
+
+/*
+ * @brief   Get accelerometer scaled data.
+ *
+ * @param   handle Handle structure.
+ * @param   scale_data Scaled data.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_accel_scale(imu_handle_t handle, imu_scale_data_t *scale_data);
+
+/*
+ * @brief   Get gyroscope scaled data.
+ *
+ * @param   handle Handle structure.
+ * @param   scale_data Scaled data.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_gyro_scale(imu_handle_t handle, imu_scale_data_t *scale_data);
+
 
 #ifdef __cplusplus
 }
