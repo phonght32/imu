@@ -124,7 +124,7 @@ typedef struct mpu6500 {
 	mpu6500_dlpf_cfg_t      dlpf_cfg;               /*!< MPU6500 digital low pass filter (DLPF) */
 	mpu6500_sleep_mode_t    sleep_mode;             /*!< MPU6500 sleep mode */
 	mpu6500_afs_sel_t       afs_sel;                /*!< MPU6500 accelerometer full scale range */
-	mpu6500_fs_sel_t        fs_sel;                 /*!< MPU6500 gyroscope full scale range */
+	mpu6500_gfs_sel_t       gfs_sel;                /*!< MPU6500 gyroscope full scale range */
 	mpu6500_comm_mode_t     comm_mode;              /*!< MPU6500 interface protocol */
 	func_read_bytes         read_bytes;             /*!< MPU6500 read function */
 	func_write_bytes        write_bytes;            /*!< MPU6500 write function */
@@ -158,7 +158,7 @@ err_code_t mpu6500_set_config(mpu6500_cfg_t config)
 	}
 
 	mpu6500_handle->afs_sel = config.afs_sel;
-	mpu6500_handle->fs_sel = config.fs_sel;
+	mpu6500_handle->gfs_sel = config.gfs_sel;
 	mpu6500_handle->clksel = config.clksel;
 	mpu6500_handle->dlpf_cfg = config.dlpf_cfg;
 	mpu6500_handle->sleep_mode = config.sleep_mode;
@@ -210,7 +210,7 @@ err_code_t mpu6500_config(void)
 
 	/* Configure gyroscope range */
 	buffer = 0;
-	buffer = (mpu6500_handle->fs_sel << 3) & 0x18;
+	buffer = (mpu6500_handle->gfs_sel << 3) & 0x18;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_GYRO_CONFIG, &buffer, 1, MPU6500_INIT_TIMEOUT);
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{

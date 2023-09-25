@@ -73,7 +73,7 @@ typedef enum {
     MPU6500_FS_SEL_1000,                    /*!< 1000 deg/s */
     MPU6500_FS_SEL_2000,                    /*!< 2000 deg/s */
     MPU6500_FS_SEL_MAX
-} mpu6500_fs_sel_t;
+} mpu6500_gfs_sel_t;
 
 /**
  * @brief   AFS scale.
@@ -102,7 +102,7 @@ typedef struct {
     mpu6500_clksel_t        clksel;         /*!< MPU6500 clock source */
     mpu6500_dlpf_cfg_t      dlpf_cfg;       /*!< MPU6500 digital low pass filter (DLPF) */
     mpu6500_sleep_mode_t    sleep_mode;     /*!< MPU6500 sleep mode */
-    mpu6500_fs_sel_t        fs_sel;         /*!< MPU6500 gyroscope full scale range */
+    mpu6500_gfs_sel_t       gfs_sel;        /*!< MPU6500 gyroscope full scale range */
     mpu6500_afs_sel_t       afs_sel;        /*!< MPU6500 accelerometer full scale range */
     mpu6500_comm_mode_t     comm_mode;      /*!< Interface protocol */
     func_read_bytes         read_bytes;     /*!< MPU6500 read function */

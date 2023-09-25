@@ -107,7 +107,7 @@ err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg)
 	}
 
 	/* Update gyroscope scaling factor */
-	switch (mpu6500_cfg.fs_sel)
+	switch (mpu6500_cfg.gfs_sel)
 	{
 	case MPU6500_FS_SEL_250:
 		handle->gyro_scaling_factor = 250.0f / 32768.0f;
