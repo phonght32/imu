@@ -1,8 +1,8 @@
 #include "stdlib.h"
 #include "stddef.h"
 
-#include "mpu9250_private.h"
 #include "imu_public.h"
+#include "mpu6500_private.h"
 
 typedef err_code_t (*func_get_accel)(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
 typedef err_code_t (*func_get_gyro)(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
@@ -53,15 +53,15 @@ err_code_t imu_config(imu_handle_t handle)
 		return ERR_CODE_NULL_PTR;
 	}
 
-	if ((handle->mpu_type & MPU_TYPE_MPU9250) != 0)
+	if ((handle->mpu_type & MPU_TYPE_MPU6500) != 0)
 	{
-		mpu9250_config();
+		mpu6500_config();
 	}
 
 	return ERR_CODE_SUCCESS;
 }
 
-err_code_t imu_config_mpu9250(imu_handle_t handle, mpu9250_cfg_t mpu9250_cfg)
+err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
@@ -71,34 +71,34 @@ err_code_t imu_config_mpu9250(imu_handle_t handle, mpu9250_cfg_t mpu9250_cfg)
 
 	err_code_t err;
 
-	err = mpu9250_init();
+	err = mpu6500_init();
 	if (err != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;
 	}
 
-	err = mpu9250_set_config(mpu9250_cfg);
+	err = mpu6500_set_config(mpu6500_cfg);
 	if (err != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;
 	}
 
 	/* Update accelerometer scaling factor */
-	switch (mpu9250_cfg.afs_sel)
+	switch (mpu6500_cfg.afs_sel)
 	{
-	case MPU9250_AFS_SEL_2G:
+	case MPU6500_AFS_SEL_2G:
 		handle->accel_scaling_factor = (2.0f / 32768.0f);
 		break;
 
-	case MPU9250_AFS_SEL_4G:
+	case MPU6500_AFS_SEL_4G:
 		handle->accel_scaling_factor = (4.0f / 32768.0f);
 		break;
 
-	case MPU9250_AFS_SEL_8G:
+	case MPU6500_AFS_SEL_8G:
 		handle->accel_scaling_factor = (8.0f / 32768.0f);
 		break;
 
-	case MPU9250_AFS_SEL_16G:
+	case MPU6500_AFS_SEL_16G:
 		handle->accel_scaling_factor = (16.0f / 32768.0f);
 		break;
 
@@ -107,21 +107,21 @@ err_code_t imu_config_mpu9250(imu_handle_t handle, mpu9250_cfg_t mpu9250_cfg)
 	}
 
 	/* Update gyroscope scaling factor */
-	switch (mpu9250_cfg.fs_sel)
+	switch (mpu6500_cfg.fs_sel)
 	{
-	case MPU9250_FS_SEL_250:
+	case MPU6500_FS_SEL_250:
 		handle->gyro_scaling_factor = 250.0f / 32768.0f;
 		break;
 
-	case MPU9250_FS_SEL_500:
+	case MPU6500_FS_SEL_500:
 		handle->gyro_scaling_factor = 500.0f / 32768.0f;
 		break;
 
-	case MPU9250_FS_SEL_1000:
+	case MPU6500_FS_SEL_1000:
 		handle->gyro_scaling_factor = 1000.0f / 32768.0f;
 		break;
 
-	case MPU9250_FS_SEL_2000:
+	case MPU6500_FS_SEL_2000:
 		handle->gyro_scaling_factor = 2000.0f / 32768.0f;
 		break;
 
@@ -129,8 +129,8 @@ err_code_t imu_config_mpu9250(imu_handle_t handle, mpu9250_cfg_t mpu9250_cfg)
 		break;
 	}
 
-	handle->get_accel = mpu9250_get_accel_raw;
-	handle->get_gyro = mpu9250_get_gyro_raw;
+	handle->get_accel = mpu6500_get_accel_raw;
+	handle->get_gyro = mpu6500_get_gyro_raw;
 
 	return ERR_CODE_SUCCESS;
 }

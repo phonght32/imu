@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 #include "err_code.h"
-#include "mpu9250_public.h"
+#include "mpu6500_public.h"
 
 typedef struct imu* imu_handle_t;
 
@@ -79,7 +79,7 @@ typedef struct {
 
 typedef enum {
     MPU_TYPE_MPU6050 = 1,
-    MPU_TYPE_MPU9250 = 2,
+    MPU_TYPE_MPU6500 = 2,
     MPU_TYPE_MAX
 } mpu_type_t;
 
@@ -126,16 +126,16 @@ err_code_t imu_set_config(imu_handle_t handle, imu_cfg_t config);
 err_code_t imu_config(imu_handle_t handle);
 
 /*
- * @brief   Configure MPU9250 parameters.
+ * @brief   Configure MPU6500 parameters.
  *
  * @param   handle IMU handle structure.
- * @param   mpu9250_cfg MPU9250 configuration structure.
+ * @param   mpu6500_cfg MPU6500 configuration structure.
  *
  * @return
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t imu_config_mpu9250(imu_handle_t handle, mpu9250_cfg_t mpu9250_cfg);
+err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg);
 
 /*
  * @brief   Get accelerometer raw value.

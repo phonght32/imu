@@ -20,20 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __MPU9250_PRIVATE_H__
-#define __MPU9250_PRIVATE_H__
+#ifndef __MPU6500_PRIVATE_H__
+#define __MPU6500_PRIVATE_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "mpu9250_public.h"
+#include "mpu6500_public.h"
 
 /*
- * @brief  	Initialize MPU9250 with default parameters.
+ * @brief  	Initialize MPU6500 with default parameters.
  *
  * @note 	This function must be called first.
- * 			To change default configuration, see "mpu9250_set_config" function.
+ * 			To change default configuration, see "mpu6500_set_config" function.
  *
  * @param   None.
  *
@@ -41,10 +41,10 @@ extern "C" {
  *      - ERR_CODE_SUCCESS:	Success.
  *      - Others:   		Fail.
  */
-err_code_t mpu9250_init(void);
+err_code_t mpu6500_init(void);
 
 /*
- * @brief   Set MPU9250 's parameters such as clock source, digital low
+ * @brief   Set MPU6500 's parameters such as clock source, digital low
  * 			pass filter (DLPF), sleep mode, gyroscope and accelerometer full
  * 			scale range, bias value, ...
  *
@@ -56,7 +56,7 @@ err_code_t mpu9250_init(void);
  *      - ERR_CODE_SUCCESS:	Success.
  *      - Others:   		Fail.
  */
-err_code_t mpu9250_set_config(mpu9250_cfg_t config);
+err_code_t mpu6500_set_config(mpu6500_cfg_t config);
 
 /*
  * @brief   Send control commands to target with configuration parameters.
@@ -67,7 +67,7 @@ err_code_t mpu9250_set_config(mpu9250_cfg_t config);
  *      - ERR_CODE_SUCCESS:	Success.
  *      - Others:   		Fail.
  */
-err_code_t mpu9250_config(void);
+err_code_t mpu6500_config(void);
 
 /*
  * @brief   Get accelerometer raw value.
@@ -80,7 +80,7 @@ err_code_t mpu9250_config(void);
  *      - ERR_CODE_SUCCESS:	Success.
  *      - Others:   		Fail.
  */
-err_code_t mpu9250_get_accel_raw(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
+err_code_t mpu6500_get_accel_raw(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
 
 /*
  * @brief   Get gyroscope raw value.
@@ -93,10 +93,10 @@ err_code_t mpu9250_get_accel_raw(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z)
  *      - ERR_CODE_SUCCESS:	Success.
  *      - Others:   		Fail.
  */
-err_code_t mpu9250_get_gyro_raw(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
+err_code_t mpu6500_get_gyro_raw(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
 
 /*
- * @brief  	Destroy MPU9250.
+ * @brief  	Destroy MPU6500.
  *
  * @param   None.
  *
@@ -104,11 +104,11 @@ err_code_t mpu9250_get_gyro_raw(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
  *      - ERR_CODE_SUCCESS:	Success.
  *      - Others:   		Fail.
  */
-err_code_t mpu9250_destroy();
+err_code_t mpu6500_destroy();
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MPU9250_PRIVATE_H__ */
+#endif /* __MPU6500_PRIVATE_H__ */
