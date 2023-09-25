@@ -60,22 +60,13 @@ typedef struct {
 } imu_calib_data_t;
 
 /**
- * @brief   IMU accelerometer bias
+ * @brief   IMU bias data structure.
  */
 typedef struct {
-    int16_t accel_bias_x;
-    int16_t accel_bias_y;
-    int16_t accel_bias_z;
-} imu_accel_bias_t;
-
-/**
- * @brief   IMU gyroscope bias
- */
-typedef struct {
-    int16_t gyro_bias_x;
-    int16_t gyro_bias_y;
-    int16_t gyro_bias_z;
-} imu_gyro_bias_t;
+    int16_t bias_x;
+    int16_t bias_y;
+    int16_t bias_z;
+} imu_bias_data_t;
 
 typedef enum {
     MPU_TYPE_MPU6050 = 1,
@@ -85,8 +76,8 @@ typedef enum {
 
 typedef struct {
     mpu_type_t          mpu_type;
-    imu_accel_bias_t    accel_bias;
-    imu_gyro_bias_t     gyro_bias;
+    imu_bias_data_t    	accel_bias;
+    imu_bias_data_t   	gyro_bias;
 } imu_cfg_t;
 
 /*
@@ -208,6 +199,54 @@ err_code_t imu_get_accel_scale(imu_handle_t handle, imu_scale_data_t *scale_data
  *      - Others:           Fail.
  */
 err_code_t imu_get_gyro_scale(imu_handle_t handle, imu_scale_data_t *scale_data);
+
+/*
+ * @brief   Set accelerometer bias data.
+ *
+ * @param   handle Handle structure.
+ * @param   bias_data Accelerometer bias value.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_set_accel_bias(imu_handle_t handle, imu_bias_data_t bias_data);
+
+/*
+ * @brief   Set gyroscope bias data.
+ *
+ * @param   handle Handle structure.
+ * @param   bias_data Gyroscope bias value.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_set_gyro_bias(imu_handle_t handle, imu_bias_data_t bias_data);
+
+/*
+ * @brief   Get accelerometer bias data.
+ *
+ * @param   handle Handle structure.
+ * @param   bias_data Data pointer.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_accel_bias(imu_handle_t handle, imu_bias_data_t *bias_data);
+
+/*
+ * @brief   Get gyroscope bias data.
+ *
+ * @param   handle Handle structure.
+ * @param   bias_data Data pointer.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_get_gyro_bias(imu_handle_t handle, imu_bias_data_t *bias_data);
 
 
 #ifdef __cplusplus

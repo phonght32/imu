@@ -9,8 +9,8 @@ typedef err_code_t (*func_get_gyro)(int16_t *raw_x, int16_t *raw_y, int16_t *raw
 
 typedef struct imu {
 	mpu_type_t 			mpu_type;
-	imu_accel_bias_t	accel_bias;
-	imu_gyro_bias_t		gyro_bias;
+	imu_bias_data_t		accel_bias;
+	imu_bias_data_t		gyro_bias;
 	float 				accel_scaling_factor;
 	float 				gyro_scaling_factor;
 	func_get_accel 		get_accel;
@@ -190,9 +190,9 @@ err_code_t imu_get_accel_calib(imu_handle_t handle, imu_calib_data_t *calib_data
 		return ERR_CODE_FAIL;
 	}
 
-	calib_data->calib_x = raw_data.raw_x - handle->accel_bias.accel_bias_x;
-	calib_data->calib_y = raw_data.raw_y - handle->accel_bias.accel_bias_y;
-	calib_data->calib_z = raw_data.raw_z - handle->accel_bias.accel_bias_z;
+	calib_data->calib_x = raw_data.raw_x - handle->accel_bias.bias_x;
+	calib_data->calib_y = raw_data.raw_y - handle->accel_bias.bias_y;
+	calib_data->calib_z = raw_data.raw_z - handle->accel_bias.bias_z;
 
 	return ERR_CODE_SUCCESS;
 }
@@ -214,9 +214,9 @@ err_code_t imu_get_gyro_calib(imu_handle_t handle, imu_calib_data_t *calib_data)
 		return ERR_CODE_FAIL;
 	}
 
-	calib_data->calib_x = raw_data.raw_x - handle->gyro_bias.gyro_bias_x;
-	calib_data->calib_y = raw_data.raw_y - handle->gyro_bias.gyro_bias_y;
-	calib_data->calib_z = raw_data.raw_z - handle->gyro_bias.gyro_bias_z;
+	calib_data->calib_x = raw_data.raw_x - handle->gyro_bias.bias_x;
+	calib_data->calib_y = raw_data.raw_y - handle->gyro_bias.bias_y;
+	calib_data->calib_z = raw_data.raw_z - handle->gyro_bias.bias_z;
 
 	return ERR_CODE_SUCCESS;
 }
@@ -238,9 +238,9 @@ err_code_t imu_get_accel_scale(imu_handle_t handle, imu_scale_data_t *scale_data
 		return ERR_CODE_FAIL;
 	}
 
-	scale_data->scale_x = (raw_data.raw_x - handle->accel_bias.accel_bias_x) * handle->accel_scaling_factor;
-	scale_data->scale_y = (raw_data.raw_y - handle->accel_bias.accel_bias_y) * handle->accel_scaling_factor;
-	scale_data->scale_z = (raw_data.raw_z - handle->accel_bias.accel_bias_z) * handle->accel_scaling_factor;
+	scale_data->scale_x = (raw_data.raw_x - handle->accel_bias.bias_x) * handle->accel_scaling_factor;
+	scale_data->scale_y = (raw_data.raw_y - handle->accel_bias.bias_y) * handle->accel_scaling_factor;
+	scale_data->scale_z = (raw_data.raw_z - handle->accel_bias.bias_z) * handle->accel_scaling_factor;
 
 	return ERR_CODE_SUCCESS;
 }
@@ -262,9 +262,61 @@ err_code_t imu_get_gyro_scale(imu_handle_t handle, imu_scale_data_t *scale_data)
 		return ERR_CODE_FAIL;
 	}
 
-	scale_data->scale_x = (raw_data.raw_x - handle->gyro_bias.gyro_bias_x) * handle->gyro_scaling_factor;
-	scale_data->scale_y = (raw_data.raw_y - handle->gyro_bias.gyro_bias_y) * handle->gyro_scaling_factor;
-	scale_data->scale_z = (raw_data.raw_z - handle->gyro_bias.gyro_bias_z) * handle->gyro_scaling_factor;
+	scale_data->scale_x = (raw_data.raw_x - handle->gyro_bias.bias_x) * handle->gyro_scaling_factor;
+	scale_data->scale_y = (raw_data.raw_y - handle->gyro_bias.bias_y) * handle->gyro_scaling_factor;
+	scale_data->scale_z = (raw_data.raw_z - handle->gyro_bias.bias_z) * handle->gyro_scaling_factor;
+
+	return ERR_CODE_SUCCESS;
+}
+
+err_code_t imu_set_accel_bias(imu_handle_t handle, imu_bias_data_t bias_data)
+{
+	/* Check if handle structure is NULL */
+	if (handle == NULL)
+	{
+		return ERR_CODE_NULL_PTR;
+	}
+
+	handle->accel_bias = bias_data;
+
+	return ERR_CODE_SUCCESS;
+}
+
+err_code_t imu_set_gyro_bias(imu_handle_t handle, imu_bias_data_t bias_data)
+{
+	/* Check if handle structure is NULL */
+	if (handle == NULL)
+	{
+		return ERR_CODE_NULL_PTR;
+	}
+
+	handle->gyro_bias = bias_data;
+
+	return ERR_CODE_SUCCESS;
+}
+
+err_code_t imu_get_accel_bias(imu_handle_t handle, imu_bias_data_t *bias_data)
+{
+	/* Check if handle structure is NULL */
+	if (handle == NULL)
+	{
+		return ERR_CODE_NULL_PTR;
+	}
+
+	*bias_data = handle->accel_bias;
+
+	return ERR_CODE_SUCCESS;
+}
+
+err_code_t imu_get_gyro_bias(imu_handle_t handle, imu_bias_data_t *bias_data)
+{
+	/* Check if handle structure is NULL */
+	if (handle == NULL)
+	{
+		return ERR_CODE_NULL_PTR;
+	}
+
+	*bias_data = handle->gyro_bias;
 
 	return ERR_CODE_SUCCESS;
 }
