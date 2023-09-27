@@ -125,7 +125,6 @@ typedef struct mpu6500 {
 	mpu6500_sleep_mode_t    sleep_mode;             /*!< MPU6500 sleep mode */
 	mpu6500_afs_sel_t       afs_sel;                /*!< MPU6500 accelerometer full scale range */
 	mpu6500_gfs_sel_t       gfs_sel;                /*!< MPU6500 gyroscope full scale range */
-	mpu6500_comm_mode_t     comm_mode;              /*!< MPU6500 interface protocol */
 	func_read_bytes         read_bytes;             /*!< MPU6500 read function */
 	func_write_bytes        write_bytes;            /*!< MPU6500 write function */
 } mpu6500_t;
@@ -162,7 +161,6 @@ err_code_t mpu6500_set_config(mpu6500_cfg_t config)
 	mpu6500_handle->clksel = config.clksel;
 	mpu6500_handle->dlpf_cfg = config.dlpf_cfg;
 	mpu6500_handle->sleep_mode = config.sleep_mode;
-	mpu6500_handle->comm_mode = config.comm_mode;
 	mpu6500_handle->read_bytes = config.read_bytes;
 	mpu6500_handle->write_bytes = config.write_bytes;
 

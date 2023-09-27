@@ -87,15 +87,6 @@ typedef enum {
 } mpu6500_afs_sel_t;
 
 /**
- * @brief   Communication mode.
- */
-typedef enum {
-    MPU6500_COMM_MODE_I2C = 0,              /*!< Interface over I2C */
-    MPU6500_COMM_MODE_SPI,                  /*!< Interface over SPI */
-    MPU6500_COMM_MODE_MAX
-} mpu6500_comm_mode_t;
-
-/**
  * @brief   Configuration structure.
  */
 typedef struct {
@@ -104,7 +95,6 @@ typedef struct {
     mpu6500_sleep_mode_t    sleep_mode;     /*!< MPU6500 sleep mode */
     mpu6500_gfs_sel_t       gfs_sel;        /*!< MPU6500 gyroscope full scale range */
     mpu6500_afs_sel_t       afs_sel;        /*!< MPU6500 accelerometer full scale range */
-    mpu6500_comm_mode_t     comm_mode;      /*!< Interface protocol */
     func_read_bytes         read_bytes;     /*!< MPU6500 read function */
     func_write_bytes        write_bytes;    /*!< MPU6500 write function */
 } mpu6500_cfg_t;

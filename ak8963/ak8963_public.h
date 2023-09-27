@@ -58,21 +58,11 @@ typedef enum {
 } ak8963_mfs_sel_t;
 
 /**
- * @brief   Communication mode.
- */
-typedef enum {
-    AK8963_COMM_MODE_I2C = 0,                   /*!< Interface over I2C */
-    AK8963_COMM_MODE_SPI,                       /*!< Interface over SPI */
-    AK8963_COMM_MODE_MAX
-} ak8963_comm_mode_t;
-
-/**
  * @brief   Configuration structure.
  */
 typedef struct {
     ak8963_mode_t               opr_mode;       /*!< AK8963 operatkion mode */
     ak8963_mfs_sel_t            mfs_sel;        /*!< AK8963 magnetometer full scale range */
-    ak8963_comm_mode_t          comm_mode;      /*!< AK8963 interface protocol */
     func_read_bytes             read_bytes;     /*!< Read function */
     func_write_bytes            write_bytes;    /*!< Write function */
 } ak8963_cfg_t;
