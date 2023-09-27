@@ -117,7 +117,7 @@
 
 
 /**
- * @brief 	Communication mode.
+ * @brief 	Handle structure.
  */
 typedef struct mpu6500 {
 	mpu6500_clksel_t        clksel;                 /*!< MPU6500 clock source */
@@ -171,7 +171,6 @@ err_code_t mpu6500_set_config(mpu6500_cfg_t config)
 
 err_code_t mpu6500_config(void)
 {
-	/* Check if configuration structure is NULL */
 	if (mpu6500_handle == NULL)
 	{
 		return ERR_CODE_NULL_PTR;
@@ -183,7 +182,7 @@ err_code_t mpu6500_config(void)
 	uint8_t buffer = 0;
 	buffer = 0x80;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_PWR_MGMT_1, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	// HAL_Delay(100);
+	/* Delay 100ms here if necessary */
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{
 		return err_ret;
@@ -193,7 +192,7 @@ err_code_t mpu6500_config(void)
 	buffer = mpu6500_handle->clksel & 0x07;
 	buffer |= (mpu6500_handle->sleep_mode << 6) & 0x40;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_PWR_MGMT_1, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	// HAL_Delay(100);
+	/* Delay 100ms here if necessary */
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{
 		return err_ret;

@@ -48,8 +48,6 @@ err_code_t mpu6500_init(void);
  * 			pass filter (DLPF), sleep mode, gyroscope and accelerometer full
  * 			scale range, bias value, ...
  *
- * @note 	This function must be called first.
- *
  * @param   config Configuration structure.
  *
  * @return
