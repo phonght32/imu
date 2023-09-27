@@ -2,6 +2,7 @@
 #include "stddef.h"
 
 #include "imu_public.h"
+#include "mpu6050_private.h"
 #include "mpu6500_private.h"
 #include "ak8963_private.h"
 
@@ -68,6 +69,80 @@ err_code_t imu_set_config(imu_handle_t handle, imu_cfg_t config)
 	handle->mag_soft_iron_bias_x = config.mag_soft_iron_bias_x;
 	handle->mag_soft_iron_bias_y = config.mag_soft_iron_bias_y;
 	handle->mag_soft_iron_bias_z = config.mag_soft_iron_bias_z;
+
+	return ERR_CODE_SUCCESS;
+}
+
+err_code_t imu_config_mpu6050(imu_handle_t handle, mpu6050_cfg_t mpu6050_cfg)
+{
+	/* Check if handle structure is NULL */
+	if (handle == NULL)
+	{
+		return ERR_CODE_NULL_PTR;
+	}
+
+	err_code_t err;
+
+	err = mpu6050_init();
+	if (err != ERR_CODE_SUCCESS)
+	{
+		return ERR_CODE_FAIL;
+	}
+
+	err = mpu6050_set_config(mpu6050_cfg);
+	if (err != ERR_CODE_SUCCESS)
+	{
+		return ERR_CODE_FAIL;
+	}
+
+	/* Update accelerometer scaling factor */
+	switch (mpu6050_cfg.afs_sel)
+	{
+	case MPU6050_AFS_SEL_2G:
+		handle->accel_scaling_factor = (2.0f / 32768.0f);
+		break;
+
+	case MPU6050_AFS_SEL_4G:
+		handle->accel_scaling_factor = (4.0f / 32768.0f);
+		break;
+
+	case MPU6050_AFS_SEL_8G:
+		handle->accel_scaling_factor = (8.0f / 32768.0f);
+		break;
+
+	case MPU6050_AFS_SEL_16G:
+		handle->accel_scaling_factor = (16.0f / 32768.0f);
+		break;
+
+	default:
+		break;
+	}
+
+	/* Update gyroscope scaling factor */
+	switch (mpu6050_cfg.gfs_sel)
+	{
+	case MPU6050_GFS_SEL_250:
+		handle->gyro_scaling_factor = 250.0f / 32768.0f;
+		break;
+
+	case MPU6050_GFS_SEL_500:
+		handle->gyro_scaling_factor = 500.0f / 32768.0f;
+		break;
+
+	case MPU6050_GFS_SEL_1000:
+		handle->gyro_scaling_factor = 1000.0f / 32768.0f;
+		break;
+
+	case MPU6050_GFS_SEL_2000:
+		handle->gyro_scaling_factor = 2000.0f / 32768.0f;
+		break;
+
+	default:
+		break;
+	}
+
+	handle->get_accel = mpu6050_get_accel_raw;
+	handle->get_gyro = mpu6050_get_gyro_raw;
 
 	return ERR_CODE_SUCCESS;
 }
@@ -194,6 +269,11 @@ err_code_t imu_config(imu_handle_t handle)
 	if (handle == NULL)
 	{
 		return ERR_CODE_NULL_PTR;
+	}
+
+	if ((handle->mpu_type & MPU_TYPE_MPU6050) != 0)
+	{
+		mpu6050_config();
 	}
 
 	if ((handle->mpu_type & MPU_TYPE_MPU6500) != 0)

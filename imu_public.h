@@ -28,8 +28,11 @@ extern "C" {
 #endif
 
 #include "err_code.h"
+
+#include "mpu6050_public.h"
 #include "mpu6500_public.h"
 #include "ak8963_public.h"
+
 
 typedef struct imu* imu_handle_t;
 
@@ -87,6 +90,18 @@ err_code_t imu_init(void);
  *      - Others:           Fail.
  */
 err_code_t imu_set_config(imu_handle_t handle, imu_cfg_t config);
+
+/*
+ * @brief   Configure MPU6050 parameters.
+ *
+ * @param   handle IMU handle structure.
+ * @param   mpu6050_cfg MPU6050 configuration structure.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_config_mpu6050(imu_handle_t handle, mpu6050_cfg_t mpu6050_cfg);
 
 /*
  * @brief   Configure MPU6500 parameters.
