@@ -68,11 +68,11 @@ typedef enum {
  * @brief   FS scale.
  */
 typedef enum {
-    MPU6500_FS_SEL_250 = 0,                 /*!< 250 deg/s */
-    MPU6500_FS_SEL_500,                     /*!< 500 deg/s */
-    MPU6500_FS_SEL_1000,                    /*!< 1000 deg/s */
-    MPU6500_FS_SEL_2000,                    /*!< 2000 deg/s */
-    MPU6500_FS_SEL_MAX
+    MPU6500_GFS_SEL_250 = 0,                /*!< 250 deg/s */
+    MPU6500_GFS_SEL_500,                    /*!< 500 deg/s */
+    MPU6500_GFS_SEL_1000,                   /*!< 1000 deg/s */
+    MPU6500_GFS_SEL_2000,                   /*!< 2000 deg/s */
+    MPU6500_GFS_SEL_MAX
 } mpu6500_gfs_sel_t;
 
 /**
