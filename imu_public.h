@@ -77,7 +77,7 @@ typedef struct {
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t imu_init(void);
+imu_handle_t imu_init(void);
 
 /*
  * @brief   Set IMU's parameters.

@@ -35,17 +35,17 @@ typedef struct imu {
 	func_get_mag 			get_mag;
 } imu_t;
 
-err_code_t imu_init(void)
+imu_handle_t imu_init(void)
 {
 	imu_handle_t imu_handle = calloc(1, sizeof(imu_handle_t));
 
 	/* Check if handle structure is NULL */
 	if (imu_handle == NULL)
 	{
-		return ERR_CODE_FAIL;
+		return NULL;
 	}
 
-	return ERR_CODE_SUCCESS;
+	return imu_handle;
 }
 
 err_code_t imu_set_config(imu_handle_t handle, imu_cfg_t config)
