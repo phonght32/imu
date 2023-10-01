@@ -8,8 +8,12 @@ extern "C" {
 #include "err_code.h"
 
 #include "mpu6050_public.h"
+#include "mpu6050_register.h"
 #include "mpu6500_public.h"
+#include "mpu6500_register.h"
 #include "ak8963_public.h"
+#include "ak8963_register.h"
+
 
 
 typedef struct imu* imu_handle_t;
