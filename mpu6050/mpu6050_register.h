@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#define MPU6050_ADDR                0x68   		/*!< MPU6050 Address */
+#define MPU6050_ADDR                (0x68<<1)   /*!< MPU6050 Address */
 
 
 #define MPU6050_SELF_TEST_X         0x0D        /*!< SELF TEST REGISTERS */
