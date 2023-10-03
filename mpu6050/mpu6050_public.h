@@ -10,7 +10,7 @@ extern "C" {
 
 typedef err_code_t (*func_read_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
 typedef err_code_t (*func_write_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
-
+typedef void (*func_delay)(uint32_t ms);
 
 /**
  * @brief   Clock selection.
@@ -79,6 +79,7 @@ typedef struct {
     mpu6050_afs_sel_t       afs_sel;        /*!< MPU6050 accelerometer full scale range */
     func_read_bytes         read_bytes;     /*!< MPU6050 read function */
     func_write_bytes        write_bytes;    /*!< MPU6050 write function */
+    func_delay              delay;          /*!< MPU6050 delay function */
 } mpu6050_cfg_t;
 
 
