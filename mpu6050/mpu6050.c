@@ -76,7 +76,7 @@ err_code_t mpu6050_config(void)
 	uint8_t buffer = 0;
 	buffer = 0x80;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_PWR_MGMT_1, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -88,7 +88,7 @@ err_code_t mpu6050_config(void)
 	buffer = mpu6050_handle->clksel & 0x07;
 	buffer |= (mpu6050_handle->sleep_mode << 6) & 0x40;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_PWR_MGMT_1, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -100,7 +100,7 @@ err_code_t mpu6050_config(void)
 	buffer = 0;
 	buffer = mpu6050_handle->dlpf_cfg & 0x07;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_CONFIG, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -109,7 +109,7 @@ err_code_t mpu6050_config(void)
 	buffer = 0;
 	buffer = (mpu6050_handle->gfs_sel << 3) & 0x18;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_GYRO_CONFIG, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -118,7 +118,7 @@ err_code_t mpu6050_config(void)
 	buffer = 0;
 	buffer = (mpu6050_handle->afs_sel << 3) & 0x18;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_ACCEL_CONFIG, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -127,7 +127,7 @@ err_code_t mpu6050_config(void)
 	buffer = 0;
 	buffer = 0x04;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_SMPLRT_DIV, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -139,14 +139,14 @@ err_code_t mpu6050_config(void)
 	 */
 	buffer = 0x22;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_INT_PIN_CFG, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
 
 	buffer = 0x01;
 	err_ret = mpu6050_handle->write_bytes(MPU6050_INT_ENABLE, &buffer, 1, MPU6050_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}

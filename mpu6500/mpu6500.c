@@ -79,7 +79,7 @@ err_code_t mpu6500_config(void)
 	uint8_t buffer = 0;
 	buffer = 0x80;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_PWR_MGMT_1, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -91,7 +91,7 @@ err_code_t mpu6500_config(void)
 	buffer = mpu6500_handle->clksel & 0x07;
 	buffer |= (mpu6500_handle->sleep_mode << 6) & 0x40;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_PWR_MGMT_1, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -103,7 +103,7 @@ err_code_t mpu6500_config(void)
 	buffer = 0;
 	buffer = mpu6500_handle->dlpf_cfg & 0x07;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_CONFIG, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -112,7 +112,7 @@ err_code_t mpu6500_config(void)
 	buffer = 0;
 	buffer = (mpu6500_handle->gfs_sel << 3) & 0x18;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_GYRO_CONFIG, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -121,7 +121,7 @@ err_code_t mpu6500_config(void)
 	buffer = 0;
 	buffer = (mpu6500_handle->afs_sel << 3) & 0x18;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_ACCEL_CONFIG, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -130,7 +130,7 @@ err_code_t mpu6500_config(void)
 	buffer = 0;
 	buffer = 0x04;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_SMPLRT_DIV, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -142,14 +142,14 @@ err_code_t mpu6500_config(void)
 	 */
 	buffer = 0x22;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_INT_PIN_CFG, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
 
 	buffer = 0x01;
 	err_ret = mpu6500_handle->write_bytes(MPU6500_INT_ENABLE, &buffer, 1, MPU6500_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}

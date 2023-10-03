@@ -69,7 +69,7 @@ err_code_t ak8963_config(void)
 	uint8_t buffer = 0;
 	buffer = 0x00;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -80,7 +80,7 @@ err_code_t ak8963_config(void)
 	/* Set fuse ROM access mode */
 	buffer = 0x0F;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -91,7 +91,7 @@ err_code_t ak8963_config(void)
 	/* Power down AK8963 magnetic sensor */
 	buffer = 0x00;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -104,7 +104,7 @@ err_code_t ak8963_config(void)
 	buffer = (ak8963_handle->opr_mode) & 0x0F;
 	buffer |= (ak8963_handle->mfs_sel << 4) & 0x10;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
@@ -150,7 +150,7 @@ err_code_t ak8963_get_sens_adj(float *sens_adj_x, float *sens_adj_y, float *sens
 
 	/* Read magnetic sensitivity adjustment */
 	err_ret = ak8963_handle->write_bytes(AK8963_ASAX, mag_raw_data, 3, AK8963_INIT_TIMEOUT);
-	if (err_ret !=  ERR_CODE_SUCCESS)
+	if (err_ret != ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
