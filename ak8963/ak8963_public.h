@@ -10,6 +10,7 @@ extern "C" {
 
 typedef err_code_t (*func_read_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
 typedef err_code_t (*func_write_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
+typedef void (*func_delay)(uint32_t ms);
 
 
 /**
@@ -43,6 +44,7 @@ typedef struct {
     ak8963_mfs_sel_t            mfs_sel;        /*!< AK8963 magnetometer full scale range */
     func_read_bytes             read_bytes;     /*!< Read function */
     func_write_bytes            write_bytes;    /*!< Write function */
+    func_delay                  delay;          /*!< Delay function */
 } ak8963_cfg_t;
 
 

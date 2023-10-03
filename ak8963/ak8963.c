@@ -18,6 +18,7 @@ typedef struct ak8963 {
 	ak8963_mfs_sel_t            mfs_sel;                /*!< AK8963 magnetometer full scale range */
 	func_read_bytes         	read_bytes;     		/*!< Read function */
 	func_write_bytes        	write_bytes;    		/*!< Write function */
+	func_delay                  delay;          		/*!< Delay function */
 } ak8963_t;
 
 /**
@@ -50,6 +51,7 @@ err_code_t ak8963_set_config(ak8963_cfg_t config)
 	ak8963_handle->mfs_sel = config.mfs_sel;
 	ak8963_handle->read_bytes = config.read_bytes;
 	ak8963_handle->write_bytes = config.write_bytes;
+	ak8963_handle->delay = config.delay;
 
 	return ERR_CODE_SUCCESS;
 }
@@ -67,36 +69,41 @@ err_code_t ak8963_config(void)
 	uint8_t buffer = 0;
 	buffer = 0x00;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	/* Delay 10ms here if necessary */
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
+
+	/* Delay 10ms here if necessary */
+	ak8963_handle->delay(10);
 
 	/* Set fuse ROM access mode */
 	buffer = 0x0F;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	/* Delay 10ms here if necessary */
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
 
+	/* Delay 10ms here if necessary */
+	ak8963_handle->delay(10);
+
 	/* Power down AK8963 magnetic sensor */
 	buffer = 0x00;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	/* Delay 10ms here if necessary */
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{
 		return err_ret;
 	}
+
+	/* Delay 10ms here if necessary */
+	ak8963_handle->delay(10);
 
 	/* Configure magnetic operation mode and range */
 	buffer = 0;
 	buffer = (ak8963_handle->opr_mode) & 0x0F;
 	buffer |= (ak8963_handle->mfs_sel << 4) & 0x10;
 	err_ret = ak8963_handle->write_bytes(AK8963_CNTL, &buffer, 1, AK8963_INIT_TIMEOUT);
-	/* Delay 10ms here if necessary */
 	if (err_ret !=  ERR_CODE_SUCCESS)
 	{
 		return err_ret;
