@@ -37,7 +37,7 @@ typedef struct imu {
 
 imu_handle_t imu_init(void)
 {
-	imu_handle_t imu_handle = calloc(1, sizeof(imu_handle_t));
+	imu_handle_t imu_handle = calloc(1, sizeof(imu_t));
 
 	/* Check if handle structure is NULL */
 	if (imu_handle == NULL)

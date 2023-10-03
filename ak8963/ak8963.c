@@ -27,10 +27,9 @@ typedef struct ak8963 *ak8963_handle_t;
 
 static ak8963_handle_t ak8963_handle = (void*)NULL;
 
-
 err_code_t ak8963_init(void)
 {
-	ak8963_handle = calloc(1, sizeof(ak8963_handle_t));
+	ak8963_handle = calloc(1, sizeof(ak8963_t));
 
 	if (ak8963_handle == NULL)
 	{

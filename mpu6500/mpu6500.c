@@ -36,7 +36,7 @@ static mpu6500_handle_t mpu6500_handle = (void*)NULL;
 
 err_code_t mpu6500_init(void)
 {
-	mpu6500_handle = calloc(1, sizeof(mpu6500_handle_t));
+	mpu6500_handle = calloc(1, sizeof(mpu6500_t));
 
 	if (mpu6500_handle == NULL)
 	{
