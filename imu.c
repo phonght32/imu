@@ -1,17 +1,42 @@
 #include "stdlib.h"
 #include "stddef.h"
 
-#include "imu_public.h"
-#include "mpu6050_private.h"
-#include "mpu6500_private.h"
-#include "ak8963_private.h"
+#include "imu.h"
 
-typedef err_code_t (*func_get_accel)(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
-typedef err_code_t (*func_get_gyro)(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
-typedef err_code_t (*func_get_mag)(int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
+#define USE_MPU6050
+// #define USE_MPU6500
+// #define USE_AK8963
+
+#define AK8963_OPR_MODE  			AK8963_MODE_CONT_MEASUREMENT_2
+#define AK8963_MFS_SEL  			AK8963_MFS_16BIT
+
+#define MPU6050_CLKSEL  			MPU6050_CLKSEL_X_GYRO_REF
+#define MPU6050_DLPF_CFG  			MPU6050_44ACCEL_42GYRO_BW_HZ
+#define MPU6050_SLEEP_MODE  		MPU6050_DISABLE_SLEEP_MODE
+#define MPU6050_GFS_SEL  			MPU6050_GFS_SEL_2000
+#define MPU6050_AFS_SEL   			MPU6050_AFS_SEL_8G
+
+#define MPU6500_CLKSEL  			MPU6500_CLKSEL_AUTO
+#define MPU6500_DLPF_CFG  			MPU6500_41ACEL_42GYRO_BW_HZ
+#define MPU6500_SLEEP_MODE  		MPU6500_DISABLE_SLEEP_MODE
+#define MPU6500_GFS_SEL  			MPU6500_GFS_SEL_2000
+#define MPU6500_AFS_SEL   			MPU6500_AFS_SEL_8G
+
+
+#ifdef USE_MPU6050
+#include "mpu6050.h"
+#endif
+
+#ifdef USE_MPU6500
+#include "mpu6500.h"
+#endif
+
+#ifdef USE_AK8963
+#include "ak8963.h"
+#endif
+
 
 typedef struct imu {
-	mpu_type_t 				mpu_type;
 	int16_t    				accel_bias_x;
 	int16_t    				accel_bias_y;
 	int16_t    				accel_bias_z;
@@ -30,50 +55,17 @@ typedef struct imu {
 	float  					mag_sens_adj_x;
 	float  					mag_sens_adj_y;
 	float  					mag_sens_adj_z;
-	func_get_accel 			get_accel;
-	func_get_gyro 			get_gyro;
-	func_get_mag 			get_mag;
+	func_delay 				func_delay;
+	func_read_bytes 		ak8963_read_bytes;
+	func_write_bytes 		ak8963_write_bytes;
+	func_read_bytes 		mpu6050_read_bytes;
+	func_write_bytes 		mpu6050_write_bytes;
+	func_read_bytes 		mpu6500_read_bytes;
+	func_write_bytes 		mpu6500_write_bytes;
 } imu_t;
 
-imu_handle_t imu_init(void)
-{
-	imu_handle_t imu_handle = calloc(1, sizeof(imu_t));
-
-	/* Check if handle structure is NULL */
-	if (imu_handle == NULL)
-	{
-		return NULL;
-	}
-
-	return imu_handle;
-}
-
-err_code_t imu_set_config(imu_handle_t handle, imu_cfg_t config)
-{
-	/* Check if handle structure is NULL */
-	if (handle == NULL)
-	{
-		return ERR_CODE_FAIL;
-	}
-
-	handle->mpu_type = config.mpu_type;
-	handle->accel_bias_x = config.accel_bias_x;
-	handle->accel_bias_y = config.accel_bias_y;
-	handle->accel_bias_z = config.accel_bias_z;
-	handle->gyro_bias_x = config.gyro_bias_x;
-	handle->gyro_bias_y = config.gyro_bias_y;
-	handle->gyro_bias_z = config.gyro_bias_z;
-	handle->mag_hard_iron_bias_x = config.mag_hard_iron_bias_x;
-	handle->mag_hard_iron_bias_y = config.mag_hard_iron_bias_y;
-	handle->mag_hard_iron_bias_z = config.mag_hard_iron_bias_z;
-	handle->mag_soft_iron_bias_x = config.mag_soft_iron_bias_x;
-	handle->mag_soft_iron_bias_y = config.mag_soft_iron_bias_y;
-	handle->mag_soft_iron_bias_z = config.mag_soft_iron_bias_z;
-
-	return ERR_CODE_SUCCESS;
-}
-
-err_code_t imu_config_mpu6050(imu_handle_t handle, mpu6050_cfg_t mpu6050_cfg)
+#ifdef USE_AK8963
+static err_code_t imu_config_ak8963(imu_handle_t handle)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
@@ -83,20 +75,66 @@ err_code_t imu_config_mpu6050(imu_handle_t handle, mpu6050_cfg_t mpu6050_cfg)
 
 	err_code_t err;
 
-	err = mpu6050_init();
+	err = ak8963_init(handle->ak8963_read_bytes,
+	                  handle->ak8963_write_bytes,
+	                  handle->func_delay,
+	                  AK8963_OPR_MODE,
+	                  AK8963_MFS_SEL);
 	if (err != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;
 	}
 
-	err = mpu6050_set_config(mpu6050_cfg);
+	ak8963_get_sens_adj(handle->ak8963_read_bytes,
+	                    &handle->mag_sens_adj_x,
+	                    &handle->mag_sens_adj_y,
+	                    &handle->mag_sens_adj_z);
+
+	/* Update magnetometer scaling factor */
+	switch (AK8963_MFS_SEL)
+	{
+	case AK8963_MFS_14BIT:
+		handle->mag_scaling_factor = 10.0f * 4912.0f / 8190.0f;
+		break;
+
+	case AK8963_MFS_16BIT:
+		handle->mag_scaling_factor = 10.0f * 4912.0f / 32760.0f;
+		break;
+
+	default:
+		break;
+	}
+
+	return ERR_CODE_SUCCESS;
+}
+#endif
+
+#ifdef USE_MPU6050
+static err_code_t imu_config_mpu6050(imu_handle_t handle)
+{
+	/* Check if handle structure is NULL */
+	if (handle == NULL)
+	{
+		return ERR_CODE_NULL_PTR;
+	}
+
+	err_code_t err;
+
+	err = mpu6050_init(handle->mpu6050_read_bytes,
+	                   handle->mpu6050_write_bytes,
+	                   handle->func_delay,
+	                   MPU6050_CLKSEL,
+	                   MPU6050_DLPF_CFG,
+	                   MPU6050_SLEEP_MODE,
+	                   MPU6050_AFS_SEL,
+	                   MPU6050_GFS_SEL);
 	if (err != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;
 	}
 
 	/* Update accelerometer scaling factor */
-	switch (mpu6050_cfg.afs_sel)
+	switch (MPU6050_AFS_SEL)
 	{
 	case MPU6050_AFS_SEL_2G:
 		handle->accel_scaling_factor = (2.0f / 32768.0f);
@@ -119,7 +157,7 @@ err_code_t imu_config_mpu6050(imu_handle_t handle, mpu6050_cfg_t mpu6050_cfg)
 	}
 
 	/* Update gyroscope scaling factor */
-	switch (mpu6050_cfg.gfs_sel)
+	switch (MPU6050_GFS_SEL)
 	{
 	case MPU6050_GFS_SEL_250:
 		handle->gyro_scaling_factor = 250.0f / 32768.0f;
@@ -141,13 +179,12 @@ err_code_t imu_config_mpu6050(imu_handle_t handle, mpu6050_cfg_t mpu6050_cfg)
 		break;
 	}
 
-	handle->get_accel = mpu6050_get_accel_raw;
-	handle->get_gyro = mpu6050_get_gyro_raw;
-
 	return ERR_CODE_SUCCESS;
 }
+#endif
 
-err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg)
+#ifdef USE_MPU6500
+static err_code_t imu_config_mpu6500(imu_handle_t handle)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
@@ -157,20 +194,21 @@ err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg)
 
 	err_code_t err;
 
-	err = mpu6500_init();
-	if (err != ERR_CODE_SUCCESS)
-	{
-		return ERR_CODE_FAIL;
-	}
-
-	err = mpu6500_set_config(mpu6500_cfg);
+	err = mpu6500_init(handle->mpu6500_read_bytes,
+	                   handle->mpu6500_write_bytes,
+	                   handle->func_delay,
+	                   MPU6500_CLKSEL,
+	                   MPU6500_DLPF_CFG,
+	                   MPU6500_SLEEP_MODE,
+	                   MPU6500_AFS_SEL,
+	                   MPU6500_GFS_SEL);
 	if (err != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;
 	}
 
 	/* Update accelerometer scaling factor */
-	switch (mpu6500_cfg.afs_sel)
+	switch (MPU6500_AFS_SEL)
 	{
 	case MPU6500_AFS_SEL_2G:
 		handle->accel_scaling_factor = (2.0f / 32768.0f);
@@ -193,7 +231,7 @@ err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg)
 	}
 
 	/* Update gyroscope scaling factor */
-	switch (mpu6500_cfg.gfs_sel)
+	switch (MPU6500_GFS_SEL)
 	{
 	case MPU6500_GFS_SEL_250:
 		handle->gyro_scaling_factor = 250.0f / 32768.0f;
@@ -215,50 +253,50 @@ err_code_t imu_config_mpu6500(imu_handle_t handle, mpu6500_cfg_t mpu6500_cfg)
 		break;
 	}
 
-	handle->get_accel = mpu6500_get_accel_raw;
-	handle->get_gyro = mpu6500_get_gyro_raw;
-
 	return ERR_CODE_SUCCESS;
 }
+#endif
 
-err_code_t imu_config_ak8963(imu_handle_t handle, ak8963_cfg_t ak8963_cfg)
+imu_handle_t imu_init(void)
+{
+	imu_handle_t imu_handle = calloc(1, sizeof(imu_t));
+
+	/* Check if handle structure is NULL */
+	if (imu_handle == NULL)
+	{
+		return NULL;
+	}
+
+	return imu_handle;
+}
+
+err_code_t imu_set_config(imu_handle_t handle, imu_cfg_t config)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
 	{
-		return ERR_CODE_NULL_PTR;
-	}
-
-	err_code_t err;
-
-	err = ak8963_init();
-	if (err != ERR_CODE_SUCCESS)
-	{
 		return ERR_CODE_FAIL;
 	}
 
-	err = ak8963_set_config(ak8963_cfg);
-	if (err != ERR_CODE_SUCCESS)
-	{
-		return ERR_CODE_FAIL;
-	}
-
-	/* Update magnetometer scaling factor */
-	switch (ak8963_cfg.mfs_sel)
-	{
-	case AK8963_MFS_14BIT:
-		handle->mag_scaling_factor = 10.0f * 4912.0f / 8190.0f;
-		break;
-
-	case AK8963_MFS_16BIT:
-		handle->mag_scaling_factor = 10.0f * 4912.0f / 32760.0f;
-		break;
-
-	default:
-		break;
-	}
-
-	handle->get_mag = ak8963_get_mag_raw;
+	handle->accel_bias_x = config.accel_bias_x;
+	handle->accel_bias_y = config.accel_bias_y;
+	handle->accel_bias_z = config.accel_bias_z;
+	handle->gyro_bias_x = config.gyro_bias_x;
+	handle->gyro_bias_y = config.gyro_bias_y;
+	handle->gyro_bias_z = config.gyro_bias_z;
+	handle->mag_hard_iron_bias_x = config.mag_hard_iron_bias_x;
+	handle->mag_hard_iron_bias_y = config.mag_hard_iron_bias_y;
+	handle->mag_hard_iron_bias_z = config.mag_hard_iron_bias_z;
+	handle->mag_soft_iron_bias_x = config.mag_soft_iron_bias_x;
+	handle->mag_soft_iron_bias_y = config.mag_soft_iron_bias_y;
+	handle->mag_soft_iron_bias_z = config.mag_soft_iron_bias_z;
+	handle->func_delay = config.func_delay;
+	handle->ak8963_read_bytes = config.ak8963_read_bytes;
+	handle->ak8963_write_bytes = config.ak8963_write_bytes;
+	handle->mpu6050_read_bytes = config.mpu6050_read_bytes;
+	handle->mpu6050_write_bytes = config.mpu6050_write_bytes;
+	handle->mpu6500_read_bytes = config.mpu6500_read_bytes;
+	handle->mpu6500_write_bytes = config.mpu6500_write_bytes;
 
 	return ERR_CODE_SUCCESS;
 }
@@ -271,23 +309,17 @@ err_code_t imu_config(imu_handle_t handle)
 		return ERR_CODE_NULL_PTR;
 	}
 
-	if ((handle->mpu_type & MPU_TYPE_MPU6050) != 0)
-	{
-		mpu6050_config();
-	}
+#ifdef USE_MPU6050
+	imu_config_mpu6050(handle);
+#endif
 
-	if ((handle->mpu_type & MPU_TYPE_MPU6500) != 0)
-	{
-		mpu6500_config();
-	}
+#ifdef USE_MPU6500
+	imu_config_mpu6500(handle);
+#endif
 
-	if ((handle->mpu_type & MPU_TYPE_AK8963) != 0)
-	{
-		ak8963_config();
-		ak8963_get_sens_adj(&handle->mag_sens_adj_x,
-		                    &handle->mag_sens_adj_y,
-		                    &handle->mag_sens_adj_z);
-	}
+#ifdef USE_AK8963
+	imu_config_ak8963(handle);
+#endif
 
 	return ERR_CODE_SUCCESS;
 }
@@ -302,7 +334,13 @@ err_code_t imu_get_accel_raw(imu_handle_t handle, int16_t *raw_x, int16_t *raw_y
 
 	err_code_t err;
 
-	err = handle->get_accel(raw_x, raw_y, raw_z);
+#ifdef USE_MPU6050
+	err = mpu6050_get_accel_raw(handle->mpu6050_read_bytes, raw_x, raw_y, raw_z);
+#endif
+
+#ifdef USE_MPU6500
+	err = mpu6500_get_accel_raw(handle->mpu6500_read_bytes, raw_x, raw_y, raw_z);
+#endif
 
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
@@ -322,7 +360,13 @@ err_code_t imu_get_accel_calib(imu_handle_t handle, int16_t *calib_x, int16_t *c
 	err_code_t err;
 	int16_t raw_x, raw_y, raw_z;
 
-	err = handle->get_accel(&raw_x, &raw_y, &raw_z);
+#ifdef USE_MPU6050
+	err = mpu6050_get_accel_raw(handle->mpu6050_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
+
+#ifdef USE_MPU6500
+	err = mpu6500_get_accel_raw(handle->mpu6500_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
 
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
@@ -346,7 +390,13 @@ err_code_t imu_get_accel_scale(imu_handle_t handle, float *scale_x, float *scale
 	err_code_t err;
 	int16_t raw_x, raw_y, raw_z;
 
-	err = handle->get_accel(&raw_x, &raw_y, &raw_z);
+#ifdef USE_MPU6050
+	err = mpu6050_get_accel_raw(handle->mpu6050_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
+
+#ifdef USE_MPU6500
+	err = mpu6500_get_accel_raw(handle->mpu6500_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
 
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
@@ -369,7 +419,13 @@ err_code_t imu_get_gyro_raw(imu_handle_t handle, int16_t *raw_x, int16_t *raw_y,
 
 	err_code_t err;
 
-	err = handle->get_gyro(raw_x, raw_y, raw_z);
+#ifdef USE_MPU6050
+	err = mpu6050_get_gyro_raw(handle->mpu6050_read_bytes, raw_x, raw_y, raw_z);
+#endif
+
+#ifdef USE_MPU6500
+	err = mpu6500_get_gyro_raw(handle->mpu6500_read_bytes, raw_x, raw_y, raw_z);
+#endif
 
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
@@ -389,7 +445,13 @@ err_code_t imu_get_gyro_calib(imu_handle_t handle, int16_t *calib_x, int16_t *ca
 	err_code_t err;
 	int16_t raw_x, raw_y, raw_z;
 
-	err = handle->get_gyro(&raw_x, &raw_y, &raw_z);
+#ifdef USE_MPU6050
+	err = mpu6050_get_gyro_raw(handle->mpu6050_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
+
+#ifdef USE_MPU6500
+	err = mpu6500_get_gyro_raw(handle->mpu6500_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
 
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
@@ -413,7 +475,13 @@ err_code_t imu_get_gyro_scale(imu_handle_t handle, float *scale_x, float *scale_
 	err_code_t err;
 	int16_t raw_x, raw_y, raw_z;
 
-	err = handle->get_gyro(&raw_x, &raw_y, &raw_z);
+#ifdef USE_MPU6050
+	err = mpu6050_get_gyro_raw(handle->mpu6050_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
+
+#ifdef USE_MPU6500
+	err = mpu6500_get_gyro_raw(handle->mpu6500_read_bytes, &raw_x, &raw_y, &raw_z);
+#endif
 
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
@@ -434,12 +502,13 @@ err_code_t imu_get_mag_raw(imu_handle_t handle, int16_t *raw_x, int16_t *raw_y, 
 		return ERR_CODE_NULL_PTR;
 	}
 
+#ifdef USE_AK8963
 	err_code_t err;
-
-	err = handle->get_mag(raw_x, raw_y, raw_z);
+	err = ak8963_get_mag_raw(handle->ak8963_read_bytes, raw_x, raw_y, raw_z);
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
 	}
+#endif
 
 	return ERR_CODE_SUCCESS;
 }
@@ -452,13 +521,15 @@ err_code_t imu_get_mag_calib(imu_handle_t handle, float *calib_x, float *calib_y
 		return ERR_CODE_NULL_PTR;
 	}
 
-	err_code_t err;
-	int16_t raw_x, raw_y, raw_z;
+	int16_t raw_x = 0, raw_y = 0, raw_z = 0;
 
-	err = handle->get_mag(&raw_x, &raw_y, &raw_z);
+#ifdef USE_AK8963
+	err_code_t err;
+	err = ak8963_get_mag_raw(handle->ak8963_read_bytes, &raw_x, &raw_y, &raw_z);
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
 	}
+#endif
 
 	*calib_x = ((float)raw_x * handle->mag_sens_adj_x - handle->mag_hard_iron_bias_x / handle->mag_scaling_factor) * handle->mag_soft_iron_bias_x;
 	*calib_y = ((float)raw_y * handle->mag_sens_adj_y - handle->mag_hard_iron_bias_y / handle->mag_scaling_factor) * handle->mag_soft_iron_bias_y;
@@ -475,13 +546,15 @@ err_code_t imu_get_mag_scale(imu_handle_t handle, float *scale_x, float *scale_y
 		return ERR_CODE_NULL_PTR;
 	}
 
-	err_code_t err;
-	int16_t raw_x, raw_y, raw_z;
+	int16_t raw_x = 0, raw_y = 0, raw_z = 0;
 
-	err = handle->get_mag(&raw_x, &raw_y, &raw_z);
+#ifdef USE_AK8963
+	err_code_t err;
+	err = ak8963_get_mag_raw(handle->ak8963_read_bytes, &raw_x, &raw_y, &raw_z);
 	if (err != ERR_CODE_SUCCESS) {
 		return ERR_CODE_FAIL;
 	}
+#endif
 
 	*scale_x = ((float)raw_x * handle->mag_sens_adj_x * handle->mag_scaling_factor - handle->mag_hard_iron_bias_x) * handle->mag_soft_iron_bias_x;
 	*scale_y = ((float)raw_y * handle->mag_sens_adj_y * handle->mag_scaling_factor - handle->mag_hard_iron_bias_y) * handle->mag_soft_iron_bias_y;

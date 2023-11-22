@@ -1,15 +1,13 @@
-#ifndef __MPU6500_PUBLIC_H__
-#define __MPU6500_PUBLIC_H__
+#ifndef __MPU6500_PRIVATE_H__
+#define __MPU6500_PRIVATE_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "err_code.h"
+#include "imu_intf.h"
 
-typedef err_code_t (*func_read_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
-typedef err_code_t (*func_write_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
-typedef void (*func_delay)(uint32_t ms);
 
 /**
  * @brief   Clock source select.
@@ -65,23 +63,68 @@ typedef enum {
     MPU6500_AFS_SEL_MAX
 } mpu6500_afs_sel_t;
 
-/**
- * @brief   Configuration structure.
+/*
+ * @brief   Send control commands to target with configuration parameters.
+ *
+ * @param   read_bytes Function read bytes.
+ * @param   write_bytes Function write bytes.
+ * @param   delay Function delay.
+ * @param   clksel Clock source.
+ * @param   dlpf_cfg Low-pass filter.
+ * @param   sleep_mode Sleep mode.
+ * @param   afs_sel Accelerometer full scale.
+ * @param   gfs_sel Gyroscope full scale.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
  */
-typedef struct {
-    mpu6500_clksel_t        clksel;         /*!< MPU6500 clock source */
-    mpu6500_dlpf_cfg_t      dlpf_cfg;       /*!< MPU6500 digital low pass filter (DLPF) */
-    mpu6500_sleep_mode_t    sleep_mode;     /*!< MPU6500 sleep mode */
-    mpu6500_gfs_sel_t       gfs_sel;        /*!< MPU6500 gyroscope full scale range */
-    mpu6500_afs_sel_t       afs_sel;        /*!< MPU6500 accelerometer full scale range */
-    func_read_bytes         read_bytes;     /*!< MPU6500 read function */
-    func_write_bytes        write_bytes;    /*!< MPU6500 write function */
-    func_delay              delay;          /*!< MPU6500 delay function */
-} mpu6500_cfg_t;
+err_code_t mpu6500_init(func_read_bytes read_bytes,
+                        func_write_bytes write_bytes,
+                        func_delay delay,
+                        mpu6500_clksel_t clksel,
+                        mpu6500_dlpf_cfg_t dlpf_cfg,
+                        mpu6500_sleep_mode_t sleep_mode,
+                        mpu6500_afs_sel_t afs_sel,
+                        mpu6500_gfs_sel_t gfs_sel);
+
+/*
+ * @brief   Get accelerometer raw value.
+ *
+ * @param   read_bytes Function read bytes.
+ * @param   raw_x Raw data x axis.
+ * @param   raw_y Raw data y axis.
+ * @param   raw_z Raw data z axis.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t mpu6500_get_accel_raw(func_read_bytes read_bytes,
+                                 int16_t *raw_x,
+                                 int16_t *raw_y,
+                                 int16_t *raw_z);
+
+/*
+ * @brief   Get gyroscope raw value.
+ *
+ * @param   read_bytes Function read bytes.
+ * @param   raw_x Raw data x axis.
+ * @param   raw_y Raw data y axis.
+ * @param   raw_z Raw data z axis.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t mpu6500_get_gyro_raw(func_read_bytes read_bytes,
+                                int16_t *raw_x,
+                                int16_t *raw_y,
+                                int16_t *raw_z);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MPU6500_PUBLIC_H__ */
+#endif /* __MPU6500_PRIVATE_H__ */
