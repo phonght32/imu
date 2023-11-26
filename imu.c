@@ -22,6 +22,8 @@
 #define MPU6500_GFS_SEL  			MPU6500_GFS_SEL_2000
 #define MPU6500_AFS_SEL   			MPU6500_AFS_SEL_8G
 
+#define BUFFER_CALIB_DEFAULT 		1000
+
 
 #ifdef USE_MPU6050
 #include "mpu6050.h"
@@ -681,4 +683,54 @@ err_code_t imu_get_mag_soft_iron_bias(imu_handle_t handle, float *bias_x, float 
 	*bias_z = handle->mag_soft_iron_bias_z;
 
 	return ERR_CODE_SUCCESS;
+}
+
+err_code_t imu_auto_calib(imu_handle_t handle)
+{
+	int buffersize = BUFFER_CALIB_DEFAULT;
+    int mean_ax, mean_ay, mean_az, mean_gx, mean_gy, mean_gz;
+    long i = 0, buff_ax = 0, buff_ay = 0, buff_az = 0, buff_gx = 0, buff_gy = 0, buff_gz = 0;
+
+    while (i < (buffersize + 101))                  /*!< Dismiss 100 first value */
+    {
+    	int16_t accel_raw_x, accel_raw_y, accel_raw_z;
+    	int16_t gyro_raw_x, gyro_raw_y, gyro_raw_z;
+
+#ifdef USE_MPU6050
+    	mpu6050_get_accel_raw(handle->mpu6050_read_bytes, &accel_raw_x, &accel_raw_y, &accel_raw_z);
+    	mpu6050_get_gyro_raw(handle->mpu6050_read_bytes, &gyro_raw_x, &gyro_raw_y, &gyro_raw_z);
+#endif
+
+#ifdef USE_MPU6500
+    	mpu6500_get_accel_raw(handle->mpu6500_read_bytes, &accel_raw_x, &accel_raw_y, &accel_raw_z);
+    	mpu6500_get_gyro_raw(handle->mpu6500_read_bytes, &gyro_raw_x, &gyro_raw_y, &gyro_raw_z);
+#endif
+
+        if (i > 100 && i <= (buffersize + 100))
+        {
+            buff_ax += accel_raw_x;
+            buff_ay += accel_raw_y;
+            buff_az += accel_raw_z;
+            buff_gx += gyro_raw_x;
+            buff_gy += gyro_raw_y;
+            buff_gz += gyro_raw_z;
+        }
+        if (i == (buffersize + 100))
+        {
+            mean_ax = buff_ax / buffersize;
+            mean_ay = buff_ay / buffersize;
+            mean_az = buff_az / buffersize;
+            mean_gx = buff_gx / buffersize;
+            mean_gy = buff_gy / buffersize;
+            mean_gz = buff_gz / buffersize;
+        }
+        i++;
+    }
+
+    handle->accel_bias_x = mean_ax;
+    handle->accel_bias_y = mean_ay;
+    handle->accel_bias_z = mean_az - 1.0f / handle->accel_scaling_factor;
+    handle->gyro_bias_x = mean_gx;
+    handle->gyro_bias_y = mean_gy;
+    handle->gyro_bias_z = mean_gz;
 }

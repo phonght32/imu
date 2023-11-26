@@ -309,6 +309,16 @@ err_code_t imu_get_mag_hard_iron_bias(imu_handle_t handle, float *bias_x, float 
  */
 err_code_t imu_get_mag_soft_iron_bias(imu_handle_t handle, float *bias_x, float *bias_y, float *bias_z);
 
+/*
+ * @brief   Auto calibrate all acceleromter and gyroscope bias value.
+ *
+ * @param   handle Handle structure.
+ *
+ * @return
+ *      - ERR_CODE_SUCCESS: Success.
+ *      - Others:           Fail.
+ */
+err_code_t imu_auto_calib(imu_handle_t handle);
 
 #ifdef __cplusplus
 }
