@@ -14,25 +14,25 @@ typedef struct imu* imu_handle_t;
  * @brief   IMU configuration structure.
  */
 typedef struct {
-    int16_t             accel_bias_x;
-    int16_t             accel_bias_y;
-    int16_t             accel_bias_z;
-    int16_t             gyro_bias_x;
-    int16_t             gyro_bias_y;
-    int16_t             gyro_bias_z;
-    float               mag_hard_iron_bias_x;
-    float               mag_hard_iron_bias_y;
-    float               mag_hard_iron_bias_z;
-    float               mag_soft_iron_bias_x;
-    float               mag_soft_iron_bias_y;
-    float               mag_soft_iron_bias_z;
-    func_delay          func_delay;
-    func_read_bytes     ak8963_read_bytes;
-    func_write_bytes    ak8963_write_bytes;
-    func_read_bytes     mpu6050_read_bytes;
-    func_write_bytes    mpu6050_write_bytes;
-    func_read_bytes     mpu6500_read_bytes;
-    func_write_bytes    mpu6500_write_bytes;
+    int16_t             	accel_bias_x;
+    int16_t             	accel_bias_y;
+    int16_t             	accel_bias_z;
+    int16_t             	gyro_bias_x;
+    int16_t             	gyro_bias_y;
+    int16_t             	gyro_bias_z;
+    float               	mag_hard_iron_bias_x;
+    float               	mag_hard_iron_bias_y;
+    float               	mag_hard_iron_bias_z;
+    float               	mag_soft_iron_bias_x;
+    float               	mag_soft_iron_bias_y;
+    float               	mag_soft_iron_bias_z;
+    imu_func_delay          func_delay;
+    imu_func_read_bytes     ak8963_read_bytes;
+    imu_func_write_bytes    ak8963_write_bytes;
+    imu_func_read_bytes     mpu6050_read_bytes;
+    imu_func_write_bytes    mpu6050_write_bytes;
+    imu_func_read_bytes     mpu6500_read_bytes;
+    imu_func_write_bytes    mpu6500_write_bytes;
 } imu_cfg_t;
 
 /*

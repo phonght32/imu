@@ -29,9 +29,9 @@
 extern "C" {
 #endif
 
-typedef err_code_t (*func_read_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
-typedef err_code_t (*func_write_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
-typedef void (*func_delay)(uint32_t ms);
+typedef err_code_t (*imu_func_read_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
+typedef err_code_t (*imu_func_write_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
+typedef void (*imu_func_delay)(uint32_t ms);
 
 
 #ifdef __cplusplus

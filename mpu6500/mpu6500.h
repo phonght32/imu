@@ -79,9 +79,9 @@ typedef enum {
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t mpu6500_init(func_read_bytes read_bytes,
-                        func_write_bytes write_bytes,
-                        func_delay delay,
+err_code_t mpu6500_init(imu_func_read_bytes read_bytes,
+                        imu_func_write_bytes write_bytes,
+                        imu_func_delay delay,
                         mpu6500_clksel_t clksel,
                         mpu6500_dlpf_cfg_t dlpf_cfg,
                         mpu6500_sleep_mode_t sleep_mode,
@@ -100,7 +100,7 @@ err_code_t mpu6500_init(func_read_bytes read_bytes,
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t mpu6500_get_accel_raw(func_read_bytes read_bytes,
+err_code_t mpu6500_get_accel_raw(imu_func_read_bytes read_bytes,
                                  int16_t *raw_x,
                                  int16_t *raw_y,
                                  int16_t *raw_z);
@@ -117,7 +117,7 @@ err_code_t mpu6500_get_accel_raw(func_read_bytes read_bytes,
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t mpu6500_get_gyro_raw(func_read_bytes read_bytes,
+err_code_t mpu6500_get_gyro_raw(imu_func_read_bytes read_bytes,
                                 int16_t *raw_x,
                                 int16_t *raw_y,
                                 int16_t *raw_z);

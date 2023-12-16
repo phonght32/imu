@@ -54,13 +54,13 @@ typedef struct imu {
 	float  					mag_sens_adj_x;
 	float  					mag_sens_adj_y;
 	float  					mag_sens_adj_z;
-	func_delay 				func_delay;
-	func_read_bytes 		ak8963_read_bytes;
-	func_write_bytes 		ak8963_write_bytes;
-	func_read_bytes 		mpu6050_read_bytes;
-	func_write_bytes 		mpu6050_write_bytes;
-	func_read_bytes 		mpu6500_read_bytes;
-	func_write_bytes 		mpu6500_write_bytes;
+	imu_func_delay 			func_delay;
+	imu_func_read_bytes 	ak8963_read_bytes;
+	imu_func_write_bytes 	ak8963_write_bytes;
+	imu_func_read_bytes 	mpu6050_read_bytes;
+	imu_func_write_bytes 	mpu6050_write_bytes;
+	imu_func_read_bytes 	mpu6500_read_bytes;
+	imu_func_write_bytes 	mpu6500_write_bytes;
 } imu_t;
 
 #ifdef USE_AK8963

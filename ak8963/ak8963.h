@@ -44,9 +44,9 @@ typedef enum {
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t ak8963_init(func_read_bytes read_bytes,
-                       func_write_bytes write_bytes,
-                       func_delay delay,
+err_code_t ak8963_init(imu_func_read_bytes read_bytes,
+					   imu_func_write_bytes write_bytes,
+					   imu_func_delay delay,
                        ak8963_mode_t opr_mode,
                        ak8963_mfs_sel_t mfs_sel);
 
@@ -62,7 +62,7 @@ err_code_t ak8963_init(func_read_bytes read_bytes,
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t ak8963_get_sens_adj(func_read_bytes read_bytes, float *sens_adj_x, float *sens_adj_y, float *sens_adj_z);
+err_code_t ak8963_get_sens_adj(imu_func_read_bytes read_bytes, float *sens_adj_x, float *sens_adj_y, float *sens_adj_z);
 
 /*
  * @brief   Get magnetometer raw value.
@@ -76,7 +76,7 @@ err_code_t ak8963_get_sens_adj(func_read_bytes read_bytes, float *sens_adj_x, fl
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t ak8963_get_mag_raw(func_read_bytes read_bytes, int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
+err_code_t ak8963_get_mag_raw(imu_func_read_bytes read_bytes, int16_t *raw_x, int16_t *raw_y, int16_t *raw_z);
 
 #ifdef __cplusplus
 }
