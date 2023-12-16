@@ -23,15 +23,15 @@
 
 
 #ifdef USE_MPU6050
-#include "mpu6050.h"
+#include "mpu6050/mpu6050.h"
 #endif
 
 #ifdef USE_MPU6500
-#include "mpu6500.h"
+#include "mpu6500/mpu6500.h"
 #endif
 
 #ifdef USE_AK8963
-#include "ak8963.h"
+#include "ak8963/ak8963.h"
 #endif
 
 

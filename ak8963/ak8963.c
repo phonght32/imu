@@ -1,8 +1,8 @@
 #include "stdlib.h"
 #include "stddef.h"
 
-#include "ak8963.h"
-#include "ak8963_register.h"
+#include "ak8963/ak8963.h"
+#include "ak8963/ak8963_register.h"
 
 
 #define AK8963_INIT_TIMEOUT 		100

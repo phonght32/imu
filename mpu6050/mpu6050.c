@@ -1,8 +1,8 @@
 #include "stdlib.h"
 #include "stddef.h"
 
-#include "mpu6050.h"
-#include "mpu6050_register.h"
+#include "mpu6050/mpu6050.h"
+#include "mpu6050/mpu6050_register.h"
 
 
 #define MPU6050_INIT_TIMEOUT 		100

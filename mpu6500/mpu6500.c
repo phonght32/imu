@@ -1,8 +1,8 @@
 #include "stddef.h"
 #include "stdlib.h"
 
-#include "mpu6500.h"
-#include "mpu6500_register.h"
+#include "mpu6500/mpu6500.h"
+#include "mpu6500/mpu6500_register.h"
 
 
 #define MPU6500_INIT_TIMEOUT 			100
