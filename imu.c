@@ -1,11 +1,8 @@
 #include "stdlib.h"
 #include "stddef.h"
 
+#include "hw_define.h"
 #include "imu.h"
-
-#define USE_MPU6050
-// #define USE_MPU6500
-// #define USE_AK8963
 
 #define AK8963_OPR_MODE  			AK8963_MODE_CONT_MEASUREMENT_2
 #define AK8963_MFS_SEL  			AK8963_MFS_16BIT
