@@ -730,4 +730,6 @@ err_code_t imu_auto_calib(imu_handle_t handle)
     handle->gyro_bias_x = mean_gx;
     handle->gyro_bias_y = mean_gy;
     handle->gyro_bias_z = mean_gz;
+
+    return ERR_CODE_SUCCESS;
 }
