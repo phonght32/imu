@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #include "err_code.h"
-#include "imu_intf.h"
+#include "imu.h"
 
 
 /**
