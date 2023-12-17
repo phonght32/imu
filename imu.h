@@ -6,7 +6,11 @@ extern "C" {
 #endif
 
 #include "err_code.h"
-#include "imu_intf.h"
+#include "imu.h"
+
+typedef err_code_t (*imu_func_read_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
+typedef err_code_t (*imu_func_write_bytes)(uint8_t reg_addr, uint8_t *buf, uint16_t len, uint32_t timeout_ms);
+typedef void (*imu_func_delay)(uint32_t ms);
 
 typedef struct imu* imu_handle_t;
 
